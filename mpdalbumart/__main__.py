@@ -39,7 +39,8 @@ def get_itunes_data(album: str, artist: str) -> dict:
 
 def download_album_art(song: dict, filepath: str) -> None:
     url = get_album_art_url(song)
-    urllib.request.urlretrieve(url, filepath)
+    if url:
+        urllib.request.urlretrieve(url, filepath)
 
 
 def format_album_art_url(url: str) -> str:
@@ -88,15 +89,8 @@ def mpd_wait_for_new_album(client: MPDClient, last_song: dict) -> bool:
             client.idle("player")
             status = client.status()
             song = client.currentsong()
-
             in_suitable_state = status["state"] == "play"
             new_album = is_album_new(last_song, song)
-
-        # Check if these keys are accessible, if not exeception is thrown
-        if song["album"]:
-            pass
-        if song["albumartist"]:
-            pass
 
         return True
     except Exception:
@@ -142,8 +136,13 @@ def mpd_update_album_art(client: MPDClient, userPath: str = None) -> None:
 
     while mpd_wait_for_new_album(client, song):
         song = client.currentsong()
+
+        if not all(k in song for k in ["album", "albumartist"]):
+            continue
+
         fname = make_file_name(song, PATH)
         art_cached = is_art_cached(fname)
+
         if not art_cached:
             download_album_art(song, fname)
 
@@ -170,7 +169,6 @@ def cli_run():
             # logger.error("Received an MPD Connection error!: {}".format(e))
             client = None
         # except Exception:
-        #     print("Huh")
         #     # logger.exception("Something went very wrong!")
         #     break
 
