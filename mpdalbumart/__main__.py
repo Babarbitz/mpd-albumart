@@ -5,7 +5,7 @@ from __future__ import annotations
 import time
 import urllib.parse
 import urllib.request
-from os import path, replace, symlink
+from os import makedirs, path, replace, symlink
 
 import requests
 from mpd import MPDClient
@@ -140,6 +140,11 @@ def mpd_update_album_art(client: MPDClient, userPath: str = None) -> None:
         if not all(k in song for k in ["album", "albumartist"]):
             continue
 
+        album_dir = f"{PATH}{song['albumartist']}"
+
+        if not path.exists(album_dir):
+            makedirs(album_dir)
+
         fname = make_file_name(song, PATH)
         art_cached = is_art_cached(fname)
 
@@ -182,10 +187,6 @@ def cli_run():
     # logger.info("Shutting down...")
     exit(0)
 
-
-# for idx, flag in enumerate(sys.argv):
-#      if flag == "-h" or flag == "--help":
-#          break;
 
 if __name__ == "__main__":
     cli_run()
