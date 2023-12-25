@@ -10,19 +10,14 @@ depends=('python' 'mpd' 'python-mpd2' 'python-requests')
 makedepends=('python-build'
              'python-installer'
              'python-wheel')
-source=("git+https://github.com/Babarbitz/mpd-albumart#tag=v$pkgver")
+source=("https://github.com/Babarbitz/mpd-albumart/archive/v${pkgver}.tar.gz")
 sha256sums=('SKIP')
-pkgver() {
-    cd "$pkgname"
-    git describe --long --tags | sed 's/\([^-]*-g\)/r\1/;s/-/./g;s/^v//'
-}
-
 build() {
-    cd mpd-albumart
+    cd "$srcdir/$pkgname-$pkgver"
     python -m build --wheel --no-isolation
 }
 
 package() {
-    cd "$srcdir/$pkgname"
+    cd "$srcdir/$pkgname-$pkgver"
     python -m installer --destdir="$pkgdir" dist/*.whl
 }
