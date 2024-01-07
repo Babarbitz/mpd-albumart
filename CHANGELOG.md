@@ -2,7 +2,24 @@
 
 
 
-## v0.0.1 (2023-11-15)
+## v0.1.0 (2024-01-07)
+
+### Chore
+
+* chore: Updated build configuration
+
+Added build command to `pyprojectl.toml` and added `PKGBUILD` ([`3e5bd51`](https://github.com/Babarbitz/mpd-albumart/commit/3e5bd51a338a223c32a36fe292be4fc292eb0550))
+
+### Feature
+
+* feat: Added fuzzy string matching for lookups ([`152640b`](https://github.com/Babarbitz/mpd-albumart/commit/152640bf94469e1f5916ebfa96aa1b39151c71df))
+
+### Unknown
+
+* Updated package build ([`22e0570`](https://github.com/Babarbitz/mpd-albumart/commit/22e0570bb1b42b2d7743674d1e5fc8f1d539ce56))
+
+
+## v0.0.1 (2023-11-16)
 
 ### Fix
 
