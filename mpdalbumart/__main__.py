@@ -9,6 +9,7 @@ from os import makedirs, path, replace, symlink
 
 import requests
 from mpd import MPDClient
+from thefuzz import fuzz
 
 
 def is_album_new(last_song: dict, current_song: dict) -> bool:
@@ -21,7 +22,7 @@ def is_album_new(last_song: dict, current_song: dict) -> bool:
 
 def make_file_name(song: dict, userPath: str = None) -> str:
     album = song["album"]
-    artist = song["albumartist"]
+    artist = song["albumartist"] if "albumartist" in song else song["artist"]
     return f"{userPath}{artist}/{album}.jpg"
 
 
@@ -48,25 +49,25 @@ def format_album_art_url(url: str) -> str:
 
 
 def get_album_art_url(song: dict) -> None:
-    album = song["album"]
-    artist = song["albumartist"]
+    album = song["album"].lower()
+    artist = song["albumartist"] if "albumartist" in song else song["artist"]
+    artist = artist.lower()
     data = get_itunes_data(album, artist)
 
-    # Looks for exact match of artist + album name
-    for entry in data:
-        if artist != entry["artistName"]:
-            continue
-        if album != entry["collectionName"]:
-            continue
-        return format_album_art_url(entry["artworkUrl100"])
+    if not data:
+        data = get_itunes_data(album, "")
 
-    # Failing an exact match, look for partial match for album name
-    for entry in data:
-        if artist != entry["artistName"]:
-            continue
-        if album not in entry["collectionName"]:
-            continue
-        return format_album_art_url(entry["artworkUrl100"])
+    for e in data:
+        e_artist = e["artistName"].lower()
+        e_album = e["collectionName"].lower()
+
+        if artist == e_artist and album == e_album:
+            return format_album_art_url(e["artworkUrl100"])
+
+        if (fuzz.ratio(artist, e_artist) >= 85 or artist in e_artist) and (
+            fuzz.ratio(album, e_album) >= 85 or album in e_album
+        ):
+            return format_album_art_url(e["artworkUrl100"])
 
     # Failing partial match and only 1 result, its likely correct
     if len(data) == 1:
@@ -132,15 +133,26 @@ def mpd_update_album_art(client: MPDClient, userPath: str = None) -> None:
     song = {
         "album": "",
         "albumartist": "",
+        "artist": "",
     }
 
     while mpd_wait_for_new_album(client, song):
         song = client.currentsong()
 
-        if not all(k in song for k in ["album", "albumartist"]):
+        if "album" not in song:
             continue
 
-        album_dir = f"{PATH}{song['albumartist']}"
+        if "artist" not in song and "albumartist" not in song:
+            continue
+
+        # if not all(k in song for k in ["album", "albumartist"]):
+        #     continue
+
+        album_dir = (
+            f"{PATH}{song['albumartist']}"
+            if "albumartist" in song
+            else f"{PATH}{song['artist']}"
+        )
 
         if not path.exists(album_dir):
             makedirs(album_dir)
