@@ -2,7 +2,18 @@
 
 
 
-## v0.1.0 (2024-01-07)
+## v0.1.1 (2024-01-07)
+
+### Build
+
+* build(PKGBUILD): Updated PKGBUILD ([`11df579`](https://github.com/Babarbitz/mpd-albumart/commit/11df579b1b62ecf61d21e96da364a482b0ff5fef))
+
+### Fix
+
+* fix: Changed thefuzz to fuzzywuzzy for pkgbuild compatability ([`ed6fbde`](https://github.com/Babarbitz/mpd-albumart/commit/ed6fbde895ff244bc8746f5e2f8f4b5966436716))
+
+
+## v0.1.0 (2024-01-08)
 
 ### Chore
 
