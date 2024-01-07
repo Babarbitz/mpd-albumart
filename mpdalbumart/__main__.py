@@ -8,8 +8,8 @@ import urllib.request
 from os import makedirs, path, replace, symlink
 
 import requests
+from fuzzywuzzy import fuzz
 from mpd import MPDClient
-from thefuzz import fuzz
 
 
 def is_album_new(last_song: dict, current_song: dict) -> bool:

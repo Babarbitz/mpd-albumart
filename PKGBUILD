@@ -6,7 +6,7 @@ pkgdesc="Downloads albumart for MPD"
 arch=('x86_64')
 url="https://github.com/Babarbitz/mpd-albumart"
 license=('GPL3')
-depends=('python' 'mpd' 'python-mpd2' 'python-requests' 'python-thefuzz')
+depends=('python' 'mpd' 'python-mpd2' 'python-requests' 'python-fuzzywuzzy')
 makedepends=('python-build'
              'python-installer'
              'python-wheel')

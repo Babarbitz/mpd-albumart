@@ -4,4 +4,4 @@ pytest-cov==4.1.0
 python-semantic-release==8.0.3
 python-mpd2==3.1.0
 requests==2.31.0
-thefuzz==0.20.0
+fuzzywuzzy==0.18.0
